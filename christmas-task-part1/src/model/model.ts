@@ -4,6 +4,6 @@ export class Model{
   toyList: Toy[];
   constructor(data: Toy[]){
     this.toyList = data;
-    console.log(this.toyList);
   }
+  
 }

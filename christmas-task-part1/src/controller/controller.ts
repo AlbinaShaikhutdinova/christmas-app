@@ -1,15 +1,16 @@
 import {Model} from '../model/model';
+import { View } from '../view/view';
 import { Toy } from "../model/Toy/Toy";
-import {fetchData} from '../interface/dataLoader';
+import {fetchData} from '../utils/dataLoader';
 
 export class Controller{
-  model: Model | null;
-  constructor(){
-    this.model = null;
-    fetchData('../data.json', this.initModel);
+  model: Model;
+  view: View;
+  constructor(data: Toy[]){
+    this.model = new Model(data);
+    this.view = new View();
 
   }
-  initModel(data: Toy[]){
-    this.model = new Model(data);
-  }
+
+
 }

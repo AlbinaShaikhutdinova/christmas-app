@@ -30,10 +30,14 @@ const baseConfig = {
                 test: /\.js$/,
                 loader: "source-map-loader"
             },
+            {
+                test: /\.html$/,
+                loader: "html-loader",
+            },
         ],
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
+        extensions: ['.ts', '.tsx', '.js'],
     },
     output: {
         filename: 'index.js',

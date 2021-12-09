@@ -1,6 +1,5 @@
-import { toySize, toyShape } from '../../interface/types';
+import { toySize, toyShape } from '../../utils/types';
 
-import './toy.scss';
 
 export class Toy{
   id: number;
