@@ -1,30 +1,25 @@
-import { toySize, toyShape } from '../../utils/types';
+import { toySize, toyShape, toyColor } from '../../utils/types';
 
 
 export class Toy{
-  id: number;
+  num: string;
   name: string;
-  quantity: number;
-  image: string;
-  yearBought: number;
+  count: string;
+  year: string;
   shape: toyShape;
+  color: toyColor;
   size: toySize;
-  color: string;
   isFavourite: boolean;
 
-  constructor(id: number,name: string, quantity: number, image: string, yearBought: number,
-    shape: toyShape, size: toySize, color: string, isFavorite: boolean){
-    this.id = id;
+  constructor(num: string,name: string, count: string, year: string,
+    shape: toyShape, size: toySize, color: toyColor, isFavorite: boolean){
+    this.num = num;
     this.name = name;
-    this.quantity = quantity;
+    this.count = count;
     this.color = color;
-    this.image = image;
     this.isFavourite = isFavorite;
-    this.yearBought = yearBought;
+    this.year = year;
     this.shape = shape;
     this.size = size;
   }
-
-
-
 }

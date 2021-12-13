@@ -8,8 +8,11 @@ export class Controller{
   view: View;
   constructor(data: Toy[]){
     this.model = new Model(data);
-    this.view = new View();
+    this.view = new View(data);
 
+    this.view.toysView.filterEvent.addListener(<T>(attr: T) => {this.model.filter(attr)})
+
+    this.model.updateToyListEvent.addListener(data => { this.view.updateItems(data); });
   }
 
 

@@ -2,6 +2,11 @@
   box-sizing: border-box;
 }
 
+ul,
+li{
+  list-style: none;
+}
+
 body{
   position: relative;
   min-height: 100vh;
