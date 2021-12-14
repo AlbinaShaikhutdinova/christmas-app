@@ -1,8 +1,8 @@
 import { Toy } from '../../model/Toy/Toy';
 import htmlToElement from '../../utils/htmlToElement';
 import toysview from './index.html';
-import { toySize, toyShape, toyColor } from '../../utils/types';
-import Event from '../../controller/Events';
+
+
 
 import './view.scss';
 
@@ -19,86 +19,13 @@ const CLASSES = {
 };
 
 export class ToysView {
-    filterEvent: Event;
-    constructor() {
-        this.filterEvent = new Event();
-    }
     drawPage(): HTMLElement {
         const toys: HTMLElement = htmlToElement(toysview) as HTMLElement;
         document.querySelector('main')?.append(toys);
-        this.drawFilters();
         return toys;
     }
 
-    drawFilters() {
-        const filters = `<div class="filter-item">
-    <div class="filter-item__title">Фильтры по значению</div>
-    <div class="filter-item__filter-type">
-      <div class="filter-type__name">Форма</div>
-      <div class="filter-type__attribute shape options">
-      </div>
-    </div>
-    <div class="filter-item__filter-type">
-      <div class="filter-type__name">Цвет</div>
-      <div class="filter-type__attribute color options">
-      </div>
-    </div>
-    <div class="filter-item__filter-type">
-      <div class="filter-type__name">Размер</div>
-      <div class="filter-type__attribute size options">
-      </div>
-    </div>
-    <div class="filter-item__filter-type">
-      <div class="filter-type__name">Только любимые</div>
-      <div class="filter-type__attribute checkbox">
-        <input type="checkbox">
-      </div>
-    </div>
-    </div>
-    <div class="filter-item">
-      <div class="filter-item__title">Фильтры по диапазону</div>
-      <div class="filter-item__filter-type">
-        <div class="filter-type__name"></div>
-        <div class="filter-type__attribute"></div>
-      </div>
-      <div class="filter-item__filter-type">
-        <div class="filter-type__name"></div>
-        <div class="filter-type__attribute"></div>
-      </div>
 
-    </div>
-    <div class="filter-item">
-      <div class="filter-item__title"></div>
-      <div class="filter-item__filter-type">
-        <div class="filter-type__name"></div>
-        <div class="filter-type__attribute"></div>
-      </div>
-      <div class="filter-item__filter-type">
-        <div class="filter-type__name"></div>
-        <div class="filter-type__attribute"></div>
-      </div>
-    </div>`;
-        if (document.querySelector('.filters') !== null) {
-            document.querySelector('.filters')!.innerHTML = filters;
-        }
-
-        const shapeFilter = document.querySelector('.filter-type__attribute.shape') as HTMLElement;
-        const colorFilter = document.querySelector('.filter-type__attribute.color') as HTMLElement;
-        const sizeFilter = document.querySelector('.filter-type__attribute.size') as HTMLElement;
-        this.setAttributeValues<typeof toyShape>(shapeFilter, toyShape, 'data-shape', 'shape');
-        this.setAttributeValues<typeof toyColor>(colorFilter, toyColor, 'data-color', 'color');
-        this.setAttributeValues<typeof toySize>(sizeFilter, toySize, 'data-size', 'size');
-    }
-    private setAttributeValues<T>(attribute: HTMLElement, options: T, attributeName: string, filterType: string) {
-        for (const el in options) {
-            const item = document.createElement('div');
-            item.className = 'options__item';
-            item.setAttribute(attributeName, el);
-            //const elStr = el as string;
-            item.addEventListener('click', () => this.filterEvent.trigger({ filterType, el }));
-            attribute?.append(item);
-        }
-    }
     drawItems(data: Toy[]) {
         const container = document.querySelector(`.${CLASSES.CONTAINER}`);
         container!.innerHTML = '';

@@ -17,10 +17,11 @@
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    align-items: center;
+    align-items: flex-start;
     gap: 1em;
 
     .filter-item__filter-type{
+      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -28,9 +29,15 @@
   }
 }
 
+.filter-type__name{
+  margin-right: 1em;
+}
+
 .options{
+  width: 100%;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: flex-start;
+  gap: 0.5em;
   align-items: center;
   .options__item{
     width: 2em;
@@ -53,6 +60,39 @@
   }
   [data-shape="FIGURE"]{
     background-image: url(../../assets/svg/toy.svg);
+  }
+  [data-color]{
+    width: 1em;
+    height: 1em;
+    border-radius: 10%;
+  }
+  [data-color="RED"]{
+    background-color: red;
+  }
+  [data-color="BLUE"]{
+    background-color: blue;
+  }
+  [data-color="GREEN"]{
+    background-color: green;
+  }
+  [data-color="YELLOW"]{
+    background-color: yellow;
+  }
+  [data-color="WHITE"]{
+    background-color: white;
+  }
+  [data-size="BIG"]{
+    width: 2.3em;
+    height: 2.3em;
+    background-image: url(../../assets/svg/ball.svg);
+  }
+  [data-size="MEDIUM"]{
+    background-image: url(../../assets/svg/ball.svg);
+  }
+  [data-size="SMALL"]{
+    width: 1.5em;
+    height: 1.5em;
+    background-image: url(../../assets/svg/ball.svg);
   }
 }
 

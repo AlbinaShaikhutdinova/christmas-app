@@ -25,3 +25,5 @@ export const filterTypes = {
     size: toySize,
     color: toyColor,
 };
+
+export type possibleFilterType = toyColor | toyShape | toySize;
