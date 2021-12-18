@@ -1,66 +1,130 @@
 import { Toy } from './Toy';
-import { toySize, toyShape, possibleFilterType, toyColor } from '../../utils/types';
+import { toySize, toyShape, filterBy, toyColor, filterTypes } from '../../utils/types';
 
-interface IFilter {
+export interface IFilter {
   name: string;
-  filter(): Toy[];
+  filterType: string;
+  //filter(): Toy[];
 }
 
-export class Filter{
+export class EnumValuesFilter implements IFilter{
   name: string;
-  filterType: IfilterType[];
-  constructor(name: string, filterType: IfilterType[] ){
-      this.name = name;
-      this.filterType = filterType;
+  option: string;
+  filterType: string;
+  isActive: boolean;
+  constructor(name: string, option: string, filterType = 'enumVal', isActive = false){
+    this.name = name;
+    this.option = option;
+    this.filterType = filterType;
+    this.isActive = isActive;
+  }
+  filter(filteredList: Toy[]): Toy[]{
+    let newList: Toy[] = [];
+    const currentFilter = filterTypes[this.name as keyof typeof filterTypes];
+    const filterValue = currentFilter[this.option as keyof typeof currentFilter];
+    newList = filteredList.filter((item) => {
+      return item[this.name as keyof typeof item] === filterValue;
+    });
+    return newList;
+  }
+}
+export class BoolValuesFilter implements IFilter{
+  name: string;
+  value: boolean;
+  filterType: string;
+  constructor(name: string, value: boolean, filterType = 'boolVal'){
+    this.name = name;
+    this.value = value;
+    this.filterType = filterType
+  }
+  filter(filteredList: Toy[]): Toy[]{
+    let newList: Toy[] = [];
+    newList = filteredList.filter((item) => {
+      return item[this.name as keyof typeof item] === this.value;
+    });
+    return newList;
+  }
+}
+
+export class RangeFilter implements IFilter{
+  name: string;
+  minValue: number;
+  maxValue: number;
+  filterType: string;
+  constructor(name: string, minValue: number, maxValue: number, filterType = 'range'){
+    this.name = name;
+    this.minValue = minValue;
+    this.maxValue = maxValue;
+    this.filterType = filterType;
+  }
+  setMinvalue(newVal: number){
+    this.minValue = newVal;
+  };
+  setMaxvalue(newVal: number){
+    this.maxValue = newVal;
+  }
+  filter(filteredList: Toy[]): Toy[]{
+    let newList: Toy[] = [];
+    newList = filteredList.filter((item) => {
+      const val = item[this.name as keyof typeof item] as unknown as number
+      return ((+val >= +this.minValue) && (+val <= +this.maxValue))
+    });
+    return newList;
+  }
+}
+
+export class FilterBlock{
+  name: string;
+  filterAttributes: IfilterType[];
+  // appliedFilters: Map<string, string[] | boolean | number[]> | null;
+  constructor(name: string, filterAttributes: IfilterType[]){
+    this.name = name;
+    this.filterAttributes = filterAttributes;
+    // this.appliedFilters = null;
   }
   initAttributes(){
 
   }
   filter(){}
+  setAppliedFilters(){
+
+
+  }
 }
 
-export class FilterBuilder{
-  initValuesFilter(): Filter{
+export class FilterBlockBuilder{
+
+  initAllFilters():FilterBlock[]{
+    let block: FilterBlock[] = [];
+    block.push(this.initValuesFilter());
+    block.push(this.initRangesFilter());
+    return block;
+
+  }
+  initValuesFilter(): FilterBlock{
     let filterAttributes: IfilterType[] = [];
-    filterAttributes.push({name: 'Форма', type: 'shape',options: Object.keys(toyShape), isActive: false})
-    filterAttributes.push({name: 'Цвет', type: 'color',options: Object.keys(toyColor), isActive: false})
-    filterAttributes.push({name: 'Размер', type: 'size',options: Object.keys(toySize), isActive: false})
-    filterAttributes.push({name: 'Только любимые', type: 'favourite',value: false, isActive: false})
-    return new Filter('Фильтры по значению', filterAttributes);
-  }
-  initRangesFilter(): Filter{
-    let filterAttributes = [];
-    filterAttributes.push({name: 'Количество экземпляров', type: 'count', minBar: 1, maxBar: 12, isActive: false})
-    filterAttributes.push({name: 'Год приобретения', type: 'year', minBar: 1940, maxBar: 2020, isActive: false})
-    return new Filter('Фильтры по диапазону', filterAttributes);
-  }
 
+    filterAttributes.push({name: 'Форма', attribute: 'shape', filterType: filterBy.enumVal , options: Object.keys(toyShape)})
+    filterAttributes.push({name: 'Цвет', attribute: 'color', filterType: filterBy.enumVal ,options: Object.keys(toyColor)})
+    filterAttributes.push({name: 'Размер', attribute: 'size', filterType: filterBy.enumVal ,options: Object.keys(toySize)})
+    filterAttributes.push({name: 'Только любимые', attribute: 'favorite', filterType: filterBy.boolVal , value: false})
+    return new FilterBlock('Фильтры по значению', filterAttributes);
+  }
+  initRangesFilter(): FilterBlock{
+    let filterAttributes: IfilterType[] = [];
+    filterAttributes.push({name: 'Количество экземпляров', attribute: 'count', filterType: filterBy.range , minValue: 1, maxValue: 12})
+    filterAttributes.push({name: 'Год приобретения', attribute: 'year', filterType: filterBy.range, minValue: 1940, maxValue: 2020})
+    return new FilterBlock('Фильтры по диапазону', filterAttributes);
+  }
 }
 
-
-
-class ValuesFilter {
-    name: string;
-    constructor(name: string, shapes: toyShape[], colors: string, sizes: toySize[], isFavourite: boolean) {
-        this.name = name;
-        const properties = {
-            shapes: shapes,
-            colors: colors,
-            sizes: sizes,
-            isFavourite: isFavourite,
-        };
-    }
-    filter<T>(property: string, value: T) {
-
-    }
-}
 
 export type IfilterType = {
     name: string;
-    type: string;
+    attribute: string;
+    filterType: string;
     options?: string[];
     value?: boolean;
-    maxBar?: number;
-    minBar?: number;
-    isActive: boolean,
+    maxValue?: number;
+    minValue?: number;
 }

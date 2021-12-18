@@ -1,19 +1,26 @@
+@use '../../utils/vars';
+
 .toys-selection{
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+  color: white;
+  height: 100%;
 }
 
 .filters{
+  padding: 0 2rem 2rem 2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
 
   .filter-item{
     padding: 1em;
-    background-color: rgba(104, 104, 230, 0.452);
+    background-color: vars.$container-color;
+    border: 1px solid white;
+    border-radius: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -26,12 +33,36 @@
       justify-content: space-between;
       align-items: center;
     }
+    .filter-item__filter-type.range{
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .filter-item__filter-type.boolVal{
+      justify-content: flex-start;
+      .toggle-item input{
+        cursor: pointer;
+      }
+    }
   }
 }
 
 .filter-type__name{
   margin-right: 1em;
 }
+
+.filter-type__attribute.count, .filter-type__attribute.year{
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 1rem;
+  input{
+    width: 3rem;
+    border-radius: 1rem;
+  }
+}
+
 
 .options{
   width: 100%;
@@ -46,6 +77,33 @@
     background-repeat: no-repeat;
     cursor: pointer;
   }
+  .options__item:hover{
+    opacity: 0.8;
+  }
+
+  .options__item.active-item{
+    filter: invert(52%) sepia(98%) saturate(352%) hue-rotate(135deg) brightness(92%) contrast(92%);
+  }
+  .options__item.active-item[data-color]{
+    filter: none;
+    position: relative;
+  }
+  .options__item.active-item[data-color]::after{
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0.2rem;
+    left: 0.45rem;
+    width: 0.4rem;
+    height: 0.6rem;
+    border: solid #fff;
+    border-width: 0 4px 4px 0;
+    transform: rotate(45deg);
+  }
+  .options__item.active-item[data-color]:last-child:after{
+    border-color: grey;
+  }
+
   [data-shape="BALL"]{
     background-image: url(../../assets/svg/ball.svg);
   }
@@ -62,8 +120,8 @@
     background-image: url(../../assets/svg/toy.svg);
   }
   [data-color]{
-    width: 1em;
-    height: 1em;
+    width: 1.5rem;
+    height: 1.5rem;
     border-radius: 10%;
   }
   [data-color="RED"]{
@@ -96,43 +154,104 @@
   }
 }
 
+
+.content-container{
+  height: 80vh;
+}
 .container{
   display: flex;
   flex-flow: row wrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 1rem;
   overflow-y: scroll;
-  height: 60vh;
+  height: 100%;
   
   .container__item{
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: flex-start;
-    border: 1px solid black;
+
+    background-color: vars.$container-color;
+    border: 1px solid white;
     border-radius: 1em;
     width: 15rem;
     padding: 1em;
+    cursor: pointer;
+  }
+  .item__title{
+    margin-top: 0;
   }
 }
 
+.container::-webkit-scrollbar {
+  display: none;
+}
+
 .item__description{
+  width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: space-evenly;
+  align-items: flex-start;
 
   .description__image{
-    width: 5rem;
+    width: 100%;
     height: 5rem;
+    display: flex;
+    justify-content: center;
     img{
-      width: 100%;
-      height: auto;
+      width: auto;
+      height: 100%;
     }
   }
-  .description__list.properties{
 
 
-  }
+}
 
+.range-count.noUi-horizontal.slider-styled,
+.range-year.noUi-horizontal.slider-styled{
+  height: 10px;
+}
 
+.range-count .noUi-connect,
+.range-year .noUi-connect {
+  background: vars.$active-element-color;
+}
+
+.range-count .noUi-handle,
+.range-year .noUi-handle {
+  height: 18px;
+  width: 18px;
+  top: -5px;
+  right: -9px; /* half the width */
+  border-radius: 9px;
+}
+
+.slider-styled,
+.slider-styled .noUi-handle {
+  box-shadow: none;
+}
+.slider-styled.noUi-horizontal .noUi-handle {
+  width: 15px;
+  height: 15px;
+  right: -6px;
+  top: -4px;
+}
+/* Hide markers on slider handles */
+.slider-styled .noUi-handle::before,
+.slider-styled .noUi-handle::after {
+  display: none;
+}
+.slider-styled .noUi-handle .noUi-touch-area {
+  border: 1px solid transparent;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  width: auto;
+  height: auto;
+  cursor: pointer;
 }

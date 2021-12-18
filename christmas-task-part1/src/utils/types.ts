@@ -15,7 +15,7 @@ export enum toyShape {
 export enum toyColor {
     RED = 'красный',
     BLUE = 'синий',
-    GREEN = 'зеленый',
+    GREEN = 'зелёный',
     YELLOW = 'желтый',
     WHITE = 'белый',
 }
@@ -26,4 +26,10 @@ export const filterTypes = {
     color: toyColor,
 };
 
-export type possibleFilterType = toyColor | toyShape | toySize;
+export const filterBy = {
+    enumVal: 'enumVal', 
+    boolVal: 'boolVal',
+    range: 'range'
+}
+
+export type possibleFilterType = toyColor | toyShape | toySize | boolean | number;

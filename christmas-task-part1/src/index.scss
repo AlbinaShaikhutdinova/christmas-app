@@ -1,21 +1,96 @@
+@use './utils/vars';
 *{
   box-sizing: border-box;
 }
-
+a{
+  text-decoration: none;
+  color: white;
+}
 ul,
 li{
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 body{
   position: relative;
   min-height: 100vh;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Neucha', cursive;
 }
 main{
+  min-height: 90vh;
+  padding-top:1.5rem;
   width: 100%;
+  height: 100%;
+  padding-bottom: 8vh;
+  background-image: url(./assets/bg.jpg);
+  
 }
 
 header{
   width: 100%;
   height: 10vh;
+  background-color: vars.$main-color;
+  color: white;
+  .header__container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+  }
+  .header-nav{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    .header-nav__link{
+      display: inline-block;
+      cursor: pointer;
+    }
+    .home-link:hover{
+      filter: invert(52%) sepia(98%) saturate(352%) hue-rotate(135deg) brightness(92%) contrast(92%);
+    }
+    .toys-link:hover, .tree-link:hover{
+      color: vars.$active-element-color;
+    }
+    .header-nav__link.home-link{
+      width: 3rem;
+      height: 3rem;
+      background-image: url(./assets/svg/tree.svg);
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+  }
+}
+
+footer{
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  height: 8vh;
+  background-color: vars.$main-color;
+  color: white;
+  .footer__container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    a{
+      display: inline-block;
+    }
+    .school-link{
+     width: 5rem;
+     height: 2rem;
+      background-image: url(./assets/svg/rss.svg);
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+  }
 }
