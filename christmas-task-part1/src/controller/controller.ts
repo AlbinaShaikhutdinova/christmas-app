@@ -12,15 +12,23 @@ export class Controller {
     let promise = new Promise<Toy[]>(resolve => {
       resolve( this.model.retrieveFilters())
     });
-    promise.then((data: Toy[]) => this.view.drawToys(data, this.model.filters, this.model.currentFilters))
-   
+    promise.then((data: Toy[]) => 
+    this.view.drawToys(data, this.model.filters,
+       this.model.currentFilters,
+       this.model.currentSortOrder, 
+       this.model.chosenToysList))
+
     window.addEventListener('beforeunload',
-    (event) => {
+    () => {
       this.model.saveFilters();
     })
 
     this.view.filtersView.filterEvent.addListener((attr) => this.model.filter(attr));
-
-    this.model.updateToyListEvent.addListener((data) => this.view.updateItems(data, this.model.currentFilters));
+    this.view.sortView.sortEvent.addListener((attr) => this.model.sortList(attr));
+    this.view.filtersView.removeFiltersEvent.addListener(() => this.model.removeFilters());
+    this.view.toysView.chooseToyEvent.addListener((id) => {this.model.addToChosen(id)});
+    
+    this.model.updateToyListEvent.addListener((data) => 
+    this.view.updateItems(data, this.model.currentFilters, this.model.chosenToysList));
   }
 }

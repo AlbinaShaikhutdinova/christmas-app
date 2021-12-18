@@ -4,7 +4,6 @@ import { toySize, toyShape, filterBy, toyColor, filterTypes } from '../../utils/
 export interface IFilter {
   name: string;
   filterType: string;
-  //filter(): Toy[];
 }
 
 export class EnumValuesFilter implements IFilter{
@@ -82,14 +81,7 @@ export class FilterBlock{
     this.filterAttributes = filterAttributes;
     // this.appliedFilters = null;
   }
-  initAttributes(){
 
-  }
-  filter(){}
-  setAppliedFilters(){
-
-
-  }
 }
 
 export class FilterBlockBuilder{

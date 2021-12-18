@@ -2,6 +2,7 @@ import { Toy } from '../../model/Toy/Toy';
 import htmlToElement from '../../utils/htmlToElement';
 import { toyDescription, BoolValues } from '../../utils/translation';
 import toysview from './index.html';
+import Event from '../../controller/Events';
 
 
 
@@ -17,9 +18,14 @@ const CLASSES = {
 	PROPERTIES: 'properties',
 	DESCRIPTION: 'description',
 	PROPERTY_ITEM: 'property__item',
+	CHOSEN_ITEM: 'chosen-item',
 };
 
 export class ToysView {
+	chooseToyEvent: Event;
+	constructor(){
+		this.chooseToyEvent = new Event();
+	}
 	drawPage(): HTMLElement {
 		const toys: HTMLElement = htmlToElement(toysview) as HTMLElement;
 		document.querySelector('main')?.append(toys);
@@ -27,10 +33,12 @@ export class ToysView {
 	}
 
 
-	drawItems(data: Toy[]) {
+
+	drawItems(data: Toy[], chosenItems: Toy[]) {
 		const container = document.querySelector(`.${CLASSES.CONTAINER}`);
 		container!.innerHTML = '';
-		data.forEach(async (toy) => {
+		data.forEach(async (toy) => { 
+			console.log(toy);
 			const containerItem = document.createElement('div');
 			const itemTitle = document.createElement('h3');
 			const itemDescription = document.createElement('div');
@@ -44,7 +52,16 @@ export class ToysView {
 			descriptionImg.className = CLASSES.DESCRIPTION_IMG;
 			descriptionList.className = `${CLASSES.DESCRIPTION_LIST} ${CLASSES.PROPERTIES}`;
 
+			const chosen = chosenItems.find((chosen) => chosen.num === toy.num);
 			containerItem.id = toy.num as string;
+			containerItem.addEventListener('click', () => {
+				this.updateChosenItem.call(this, containerItem);
+				this.chooseToyEvent.trigger(toy.num);
+			});
+			if(chosen)
+			{
+				this.updateChosenItem(containerItem);
+			}
 			itemTitle.textContent = toy.name;
 			const res = await fetch(
 				`https://raw.githubusercontent.com/AlbinaShaikhutdinova/projects-data/main/assets/toys/${toy.num}.png`
@@ -77,5 +94,8 @@ export class ToysView {
 
 			container?.append(containerItem);
 		});
+	}
+	updateChosenItem(item: HTMLElement){
+		item.classList.toggle(CLASSES.CHOSEN_ITEM);
 	}
 }

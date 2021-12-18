@@ -4,17 +4,17 @@ class Event {
         this.listeners = [];
     }
 
-    addListener(listener: <T>(attr: T) => void) {
+    addListener(listener: <T>(attr?: T) => void) {
         this.listeners.push(listener);
     }
 
-    trigger<T>(params: T) {
+    trigger<T>(params?: T) {
         this.listeners.forEach((listener) => {
             listener(params);
         });
     }
 }
 
-type genericFunc = <T>(attr: T) => void;
+type genericFunc = <T>(attr?: T) => void;
 
 export default Event;

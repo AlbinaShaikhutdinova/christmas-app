@@ -1,5 +1,5 @@
 import Event from '../../controller/Events';
-import { toySize, toyShape, toyColor, filterBy } from '../../utils/types';
+import { filterBy } from '../../utils/types';
 import { FilterBlock, EnumValuesFilter, BoolValuesFilter, RangeFilter } from '../../model/Toy/filter';
 import {createSlider} from '../../utils/slider';
 import {TargetElement } from 'nouislider';
@@ -23,9 +23,11 @@ const CLASSES = {
 
 export class FiltersView{
   filterEvent: Event;
+  removeFiltersEvent: Event;
   sliders: TargetElement[]
   constructor() {
     this.filterEvent = new Event();
+    this.removeFiltersEvent = new Event();
     this.sliders =[];
   }
   private drawFilterItem(item: FilterBlock): HTMLElement{
@@ -82,15 +84,12 @@ export class FiltersView{
         this.sliders.push(range);
         range.style.width = '200px';
         slider.on('update', (values, handle) => {
-          console.log(values, handle);
           const value = values[handle];
           if(handle===0) {
             minValContainer.value = value as string;
-            console.log(minValContainer.value);
           }
           else if(handle===1){
             maxValContainer.value = value as string;
-            console.log(maxValContainer.value);
           } 
         });
         slider.on('set', (values) => {
@@ -111,6 +110,11 @@ export class FiltersView{
   updateFilterItemState(currentFilters: Array<EnumValuesFilter | BoolValuesFilter | RangeFilter>){
     for(let el of document.querySelectorAll(`.${CLASSES.OPTIONS_ITEM}`)){
       el.classList.remove(CLASSES.ACTIVE_ITEM)
+    }
+    if(currentFilters.length===0)
+    {
+      this.sliders[0].noUiSlider?.reset(false);
+      this.sliders[1].noUiSlider?.reset(false);
     }
     currentFilters.forEach(filter => {
       const element = document.querySelector(`.${CLASSES.FILTER_TYPE_ATTRIBUTE}.${filter.name}`);
@@ -133,7 +137,6 @@ export class FiltersView{
         const input = element!.querySelector('input');
         input!.checked = (filter as BoolValuesFilter).value;
       }
-      
     })
 
 
@@ -145,10 +148,12 @@ export class FiltersView{
       const item = this.drawFilterItem(filter);
       containerF?.append(item);
     })
+    this.initRemoveButton();
     this.updateFilterItemState(currentFilters);
+  }
+  initRemoveButton(){
+    const removeBtn = document.querySelector('.remove-filter');
+    removeBtn?.addEventListener('click',() => this.removeFiltersEvent.trigger());
   }
 }
 
-function querySelector(arg0: string): HTMLInputElement {
-  throw new Error('Function not implemented.');
-}

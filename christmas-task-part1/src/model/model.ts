@@ -1,6 +1,7 @@
 import { Toy } from './Toy/Toy';
-import { filterBy } from '../utils/types';
+import { filterBy , sortOrder} from '../utils/types';
 import Event from '../controller/Events';
+import { sort } from './Toy/sort';
 import { FilterBlock, FilterBlockBuilder,  EnumValuesFilter, BoolValuesFilter, RangeFilter} from './Toy/filter';
 
 export class Model {
@@ -9,7 +10,8 @@ export class Model {
   filteredToyList: Toy[];
   filters: FilterBlock[];
   currentFilters: Array<EnumValuesFilter | BoolValuesFilter | RangeFilter>
-
+  currentSortOrder: sortOrder;
+  chosenToysList: Toy[];
   constructor(data: Toy[]) {
     const builder = new FilterBlockBuilder;
     this.toyList = data;
@@ -17,10 +19,13 @@ export class Model {
     this.filters = builder.initAllFilters();
     this.currentFilters = [];
     this.updateToyListEvent = new Event();
+    this.currentSortOrder = sortOrder.NO_ORDER;
+    this.chosenToysList=[];
   }
   saveFilters(){
-    
     localStorage.setItem('filterList', JSON.stringify(this.currentFilters))
+    localStorage.setItem('sortOrder', JSON.stringify(this.currentSortOrder))
+    localStorage.setItem('chosenList', JSON.stringify(this.chosenToysList));
   }
   retrieveFilters(): Toy[]{
     //localStorage.clear();
@@ -37,7 +42,18 @@ export class Model {
         }
       })
     }
-    console.log(this.currentFilters);
+    if(localStorage.getItem('sortOrder'))
+    {
+      const order = JSON.parse(localStorage.getItem('sortOrder') as string);
+      this.currentSortOrder = order as sortOrder;
+      this.filteredToyList = sort(order, this.filteredToyList);
+      console.log(this.filteredToyList, sortOrder[this.currentSortOrder]);
+    }
+    if(localStorage.getItem('chosenList'))
+    {
+      const list = JSON.parse(localStorage.getItem('chosenList') as string);
+      this.chosenToysList = list as Toy[];
+    }
     return this.filteredToyList;
   }
   updateFilteredList(){
@@ -128,9 +144,20 @@ export class Model {
       this.addNewFilter(newFilter);
     }
   }
+  sortList<T>(sortType: T){
+    const newSortType = sortType as unknown as sortOrder;
+    this.currentSortOrder = newSortType;
+    this.filteredToyList = sort(newSortType, this.filteredToyList);
+    this.updateToyListEvent.trigger<Toy[]>(this.filteredToyList);
+  }
 
-
-
+  removeFilters(){
+    this.currentFilters = [];
+    this.currentSortOrder = sortOrder.NO_ORDER;
+    this.saveFilters();
+    this.filteredToyList = this.toyList;
+    this.updateToyListEvent.trigger<Toy[]>(this.filteredToyList);
+  }
   
   filter<T>(type: T) {
     const newAppliedFilter = (type as unknown) as {ft: string, attr: string, option: string | HTMLElement | boolean | number[] };
@@ -144,7 +171,25 @@ export class Model {
     }
 
     console.log(this.currentFilters);
+    this.filteredToyList = sort(this.currentSortOrder, this.filteredToyList);
+    console.log(this.filteredToyList);
     this.updateToyListEvent.trigger<Toy[]>(this.filteredToyList);
+  }
+
+  addToChosen<T>(id: T){
+    const newId = id as unknown as string;
+      if(this.chosenToysList.find((toy) => toy.num === newId))
+      {
+        const newToy = this.chosenToysList.find((toy) => toy.num == newId)
+        const key = this.chosenToysList.indexOf(newToy as Toy)
+        this.chosenToysList.splice(key, 1);
+      }
+      else 
+      {
+        const newToy = this.toyList.find(toy => toy.num === newId);
+        this.chosenToysList.push(newToy as Toy);
+      }
+    console.log(this.chosenToysList);
   }
   
 }

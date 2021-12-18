@@ -156,7 +156,7 @@
 
 
 .content-container{
-  height: 80vh;
+  height: 90vh;
 }
 .container{
   display: flex;
@@ -182,6 +182,9 @@
   }
   .item__title{
     margin-top: 0;
+  }
+  .container__item.chosen-item{
+    background-color: vars.$active-element-color;
   }
 }
 
@@ -254,4 +257,31 @@
   width: auto;
   height: auto;
   cursor: pointer;
+}
+
+.sort__selector{
+  padding: 0.5rem;
+  color: white;
+  background-color: vars.$active-element-color;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  option{
+    color: white;
+    cursor: pointer;
+  }
+}
+select:active{
+  border: none;
+}
+button{
+  padding: 0.5rem;
+  color: white;
+  background-color: vars.$active-element-color;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+button:hover{
+ opacity: 0.9;
 }

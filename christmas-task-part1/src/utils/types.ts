@@ -20,6 +20,14 @@ export enum toyColor {
     WHITE = 'белый',
 }
 
+export enum sortOrder {
+    ALPHABET,
+    REVERSE_ALPHABET,
+    ASCENDING,
+    DESCENDING,
+    NO_ORDER,
+}
+
 export const filterTypes = {
     shape: toyShape,
     size: toySize,
@@ -33,3 +41,4 @@ export const filterBy = {
 }
 
 export type possibleFilterType = toyColor | toyShape | toySize | boolean | number;
+
