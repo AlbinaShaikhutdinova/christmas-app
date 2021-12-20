@@ -18,19 +18,17 @@ export class Controller {
        this.model.currentSortOrder, 
        this.model.chosenToysList))
 
-    window.addEventListener('beforeunload',
-    () => {
-      this.model.saveFilters();
-    })
+    window.addEventListener('beforeunload',() => {this.model.saveFilters()})
 
     this.view.filtersView.filterEvent.addListener((attr) => this.model.filter(attr));
     this.view.sortView.sortEvent.addListener((attr) => this.model.sortList(attr));
     this.view.filtersView.removeFiltersEvent.addListener(() => this.model.removeFilters());
+    this.view.filtersView.removeSettingsEvent.addListener(() => this.model.removeSettings());
     this.view.toysView.chooseToyEvent.addListener((id) => {this.model.addToChosen(id)});
     this.view.searchView.searchToyEvent.addListener((input) => this.model.searchInFilteredList(input));
     
     this.model.updateToyListEvent.addListener((data) => 
-    this.view.updateItems(data, this.model.currentFilters, this.model.chosenToysList));
-    this.model.updateChosenToysEvent.addListener((itemId) => this.view.updateChosenItemsView(itemId))
+      this.view.updateItems(data, this.model.currentFilters, this.model.chosenToysList));
+    this.model.updateChosenToysEvent.addListener((itemId) => this.view.updateChosenItemsView(itemId, this.model.chosenToysList))
   }
 }

@@ -76,6 +76,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     cursor: pointer;
+    transition: all 0.2s;
   }
   .options__item:hover{
     opacity: 0.8;
@@ -179,6 +180,13 @@
     width: 14rem;
     padding: 1em;
     cursor: pointer;
+    transition: all 0.2s;
+  }
+  .container__item:hover{
+    background-color: vars.$container-hover-color;
+  }
+  .container__item.message-container{
+    width: 100%;
   }
   .item__title{
     margin-top: 0;
@@ -209,8 +217,6 @@
       height: 100%;
     }
   }
-
-
 }
 
 .range-count.noUi-horizontal.slider-styled,
@@ -281,7 +287,26 @@ button{
   border: none;
   border-radius: 1rem;
   cursor: pointer;
+  transition: all 0.2s;
 }
 button:hover{
  opacity: 0.9;
+}
+
+.modal-window{
+  height: 5rem;
+  width: 15rem;
+  position: absolute;
+  top: 5rem;
+  left: calc(50vw - 7.5rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  color: black;
+  border-radius: 1rem;
+  transition: all 0.3s;
+}
+.modal-window.hidden{
+  top: -5rem;
 }

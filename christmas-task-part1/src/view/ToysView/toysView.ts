@@ -4,8 +4,6 @@ import { toyDescription, BoolValues } from '../../utils/translation';
 import toysview from './index.html';
 import Event from '../../controller/Events';
 
-
-
 import './view.scss';
 
 const CLASSES = {
@@ -20,6 +18,7 @@ const CLASSES = {
 	PROPERTY_ITEM: 'property__item',
 	CHOSEN_ITEM: 'chosen-item',
 	TOY_COUNTER_TEXT: 'toy-counter__text',
+	MESSAGE_CONTAINER: 'message-container',
 };
 
 export class ToysView {
@@ -32,12 +31,27 @@ export class ToysView {
 		document.querySelector('main')?.append(toys);
 		return toys;
 	}
+	showModal(){
+		const modal = document.querySelector('.modal-window') as HTMLElement;
+		modal.classList.toggle('hidden');
+		setTimeout(() => modal.classList.toggle('hidden'), 2000);
+	}
+	showMessage(container: HTMLElement){
+		const containerItem = document.createElement('div');
+		containerItem.className = `${CLASSES.CONTAINER_ITEM} ${CLASSES.MESSAGE_CONTAINER}`;
 
-	drawItems(data: Toy[], chosenItems: string[]) {
-		const container = document.querySelector(`.${CLASSES.CONTAINER}`);
+		const message = document.createElement('p');
+		message.textContent = 'Извините, совпадений не обнаружено';
+		containerItem.append(message);
+		container.append(containerItem);
+	}
+	async drawItems(data: Toy[], chosenItems: string[]) {
+		const container = document.querySelector(`.${CLASSES.CONTAINER}`) as HTMLElement;
 		container!.innerHTML = '';
-		this.updateCounter(chosenItems.length.toString())
-		data.forEach(async (toy) => { 
+		this.updateCounter(chosenItems.length.toString());
+		if(data.length===0)
+			this.showMessage(container);
+		for(const toy of data){ 
 			const containerItem = document.createElement('div');
 			const itemTitle = document.createElement('h3');
 			const itemDescription = document.createElement('div');
@@ -89,12 +103,12 @@ export class ToysView {
 			containerItem.append(itemDescription);
 
 			container?.append(containerItem);
-		});
+		};
 	}
 	updateChosenItem(item: HTMLElement){
 		item.classList.toggle(CLASSES.CHOSEN_ITEM);
 	}
-	updateCounter(num = document.querySelectorAll(`.${CLASSES.CHOSEN_ITEM}`).length.toString()){
+	updateCounter(num: string){
 		document.querySelector(`.${CLASSES.TOY_COUNTER_TEXT}`)!.textContent = num;
 	}
 }

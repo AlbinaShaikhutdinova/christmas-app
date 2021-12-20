@@ -68,6 +68,7 @@ header{
     .header-nav__link{
       display: inline-block;
       cursor: pointer;
+      transition: all 0.2s;
     }
     .home-link:hover{
       filter: invert(52%) sepia(98%) saturate(352%) hue-rotate(135deg) brightness(92%) contrast(92%);

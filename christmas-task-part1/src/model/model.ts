@@ -100,6 +100,7 @@ export class Model {
 
   filterByBoolValues(attr: string, option: boolean){
     let newInstance = this.currentFilters.find(filter => filter.name === attr);
+    console.log(option);
     if(newInstance)
     {
       const index = this.currentFilters.indexOf(newInstance);
@@ -161,6 +162,15 @@ export class Model {
     this.filteredToyList = sort(this.currentSortOrder, this.toyList);
     this.updateToyListEvent.trigger<Toy[]>(this.filteredToyList);
   }
+
+  removeSettings(){
+    this.currentFilters = [];
+    this.filteredToyList = this.toyList;
+    this.currentSortOrder = sortOrder.NO_ORDER;
+    this.chosenToysList = [];
+    this.saveFilters();
+    this.updateToyListEvent.trigger<Toy[]>(this.filteredToyList);
+  }
   
   filter<T>(type: T) {
     const newAppliedFilter = (type as unknown) as {ft: string, attr: string, option: string | HTMLElement | boolean | number[] };
@@ -199,6 +209,7 @@ export class Model {
     if(this.chosenToysList.length>20)
     {
       this.chosenToysList.pop();
+      this.updateChosenToysEvent.trigger();
     }
     else this.updateChosenToysEvent.trigger(newToy);
   }
@@ -216,7 +227,6 @@ export class Model {
         console.log(exp.test(toy.name));
         return exp.test(toy.name);
       })
-      console.log(foundToysList)
       this.updateToyListEvent.trigger<Toy[]>(foundToysList);
     }
     

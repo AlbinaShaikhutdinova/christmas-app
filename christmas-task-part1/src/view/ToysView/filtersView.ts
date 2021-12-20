@@ -24,10 +24,12 @@ const CLASSES = {
 export class FiltersView{
   filterEvent: Event;
   removeFiltersEvent: Event;
+  removeSettingsEvent: Event;
   sliders: TargetElement[]
   constructor() {
     this.filterEvent = new Event();
     this.removeFiltersEvent = new Event();
+    this.removeSettingsEvent = new Event();
     this.sliders =[];
   }
   private drawFilterItem(item: FilterBlock): HTMLElement{
@@ -75,9 +77,11 @@ export class FiltersView{
         const minValContainer = document.createElement('input');
         minValContainer.className = `${CLASSES.INPUT_MIN}`;
         minValContainer.type = 'text';
+        minValContainer.readOnly = true;
         const maxValContainer = document.createElement('input');
         maxValContainer.className = `${CLASSES.INPUT_MAX}`;
         maxValContainer.type = 'text';
+        maxValContainer.readOnly = true;
         const range = document.createElement('div');
         range.className = `range-${type.attribute} slider-styled`
         const slider = createSlider(range, type.minValue as number, type.maxValue as number);
@@ -115,6 +119,8 @@ export class FiltersView{
     {
       this.sliders[0].noUiSlider?.reset(false);
       this.sliders[1].noUiSlider?.reset(false);
+      const toggle = document.querySelector(`.${CLASSES.TOGGLE_ITEM}`);
+      (toggle?.querySelector('input') as HTMLInputElement).checked = false;
     }
     currentFilters.forEach(filter => {
       const element = document.querySelector(`.${CLASSES.FILTER_TYPE_ATTRIBUTE}.${filter.name}`);
@@ -154,6 +160,8 @@ export class FiltersView{
   initRemoveButton(){
     const removeBtn = document.querySelector('.remove-filter');
     removeBtn?.addEventListener('click',() => this.removeFiltersEvent.trigger());
+    const removeSettingsBtn = document.querySelector('.remove-settings');
+    removeSettingsBtn?.addEventListener('click',() => this.removeSettingsEvent.trigger());
   }
 }
 

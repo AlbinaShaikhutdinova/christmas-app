@@ -17,7 +17,6 @@ export class View {
         this.sortView = new SortView();
         this.searchView = new SearchView();
         this.toysView.drawPage();
-        
     }
     drawToys(data: Toy[], filters: FilterBlock[],
         currentFilters: Array<EnumValuesFilter | BoolValuesFilter | RangeFilter>,
@@ -33,13 +32,14 @@ export class View {
         this.toysView.drawItems((data as unknown) as Toy[], chosenList);
         this.filtersView.updateFilterItemState(currentFilters);
     }
-    updateChosenItemsView<T>(item: T){
+    updateChosenItemsView<T>(item?: T, list?: string[]){
         const chosen = item as unknown as string;
         if(chosen)
         {
             this.toysView.updateChosenItem(document.getElementById(chosen) as HTMLElement)
-            this.toysView.updateCounter();
+            this.toysView.updateCounter((list?.length as number).toString());
         }
-
+        else this.toysView.showModal();
     }
+    
 }

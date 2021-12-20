@@ -11,8 +11,8 @@ export function sort(type: sortOrder, list: Toy[]): Toy[]{
     break;
     case 3:sortedList = sortByDescention(list);
     break;
-    // default: sortedList = list;
-    // break;
+    default: sortedList = list;
+    break;
   }
   return sortedList;
 }
