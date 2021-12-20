@@ -19,6 +19,7 @@ const CLASSES = {
 	DESCRIPTION: 'description',
 	PROPERTY_ITEM: 'property__item',
 	CHOSEN_ITEM: 'chosen-item',
+	TOY_COUNTER_TEXT: 'toy-counter__text',
 };
 
 export class ToysView {
@@ -32,13 +33,11 @@ export class ToysView {
 		return toys;
 	}
 
-
-
-	drawItems(data: Toy[], chosenItems: Toy[]) {
+	drawItems(data: Toy[], chosenItems: string[]) {
 		const container = document.querySelector(`.${CLASSES.CONTAINER}`);
 		container!.innerHTML = '';
+		this.updateCounter(chosenItems.length.toString())
 		data.forEach(async (toy) => { 
-			console.log(toy);
 			const containerItem = document.createElement('div');
 			const itemTitle = document.createElement('h3');
 			const itemDescription = document.createElement('div');
@@ -52,12 +51,9 @@ export class ToysView {
 			descriptionImg.className = CLASSES.DESCRIPTION_IMG;
 			descriptionList.className = `${CLASSES.DESCRIPTION_LIST} ${CLASSES.PROPERTIES}`;
 
-			const chosen = chosenItems.find((chosen) => chosen.num === toy.num);
+			const chosen = chosenItems.find((chosen) => chosen === toy.num);
 			containerItem.id = toy.num as string;
-			containerItem.addEventListener('click', () => {
-				this.updateChosenItem.call(this, containerItem);
-				this.chooseToyEvent.trigger(toy.num);
-			});
+			containerItem.addEventListener('click', () => {this.chooseToyEvent.trigger(toy.num)});
 			if(chosen)
 			{
 				this.updateChosenItem(containerItem);
@@ -97,5 +93,8 @@ export class ToysView {
 	}
 	updateChosenItem(item: HTMLElement){
 		item.classList.toggle(CLASSES.CHOSEN_ITEM);
+	}
+	updateCounter(num = document.querySelectorAll(`.${CLASSES.CHOSEN_ITEM}`).length.toString()){
+		document.querySelector(`.${CLASSES.TOY_COUNTER_TEXT}`)!.textContent = num;
 	}
 }

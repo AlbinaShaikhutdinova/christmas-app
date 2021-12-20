@@ -44,6 +44,23 @@ header{
     align-items: center;
     padding: 0 1rem;
   }
+  .app-utility{
+    display: flex;
+    gap: 1rem;
+
+    .toy-counter{
+      width: 2rem;
+      height: 2rem;
+      background-color: vars.$active-element-color;
+      border-radius: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      span{
+        display: inline-block;
+      }
+    }
+  }
   .header-nav{
     display: flex;
     align-items: center;

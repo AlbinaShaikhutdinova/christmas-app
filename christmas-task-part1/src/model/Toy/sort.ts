@@ -27,7 +27,7 @@ function reverseAlphabetSort(list: Toy[]): Toy[]{
   return sortedList;
 }
 function sortByAscention(list: Toy[]): Toy[]{
-  list.sort(dynamicSortNumbers('count'))
+  list.sort(dynamicSortNumbers('year'))
   return list;
 }
 function sortByDescention(list: Toy[]): Toy[]{

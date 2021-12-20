@@ -27,8 +27,10 @@ export class Controller {
     this.view.sortView.sortEvent.addListener((attr) => this.model.sortList(attr));
     this.view.filtersView.removeFiltersEvent.addListener(() => this.model.removeFilters());
     this.view.toysView.chooseToyEvent.addListener((id) => {this.model.addToChosen(id)});
+    this.view.searchView.searchToyEvent.addListener((input) => this.model.searchInFilteredList(input));
     
     this.model.updateToyListEvent.addListener((data) => 
     this.view.updateItems(data, this.model.currentFilters, this.model.chosenToysList));
+    this.model.updateChosenToysEvent.addListener((itemId) => this.view.updateChosenItemsView(itemId))
   }
 }

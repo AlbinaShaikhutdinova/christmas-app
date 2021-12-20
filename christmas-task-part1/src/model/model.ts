@@ -7,11 +7,13 @@ import { FilterBlock, FilterBlockBuilder,  EnumValuesFilter, BoolValuesFilter, R
 export class Model {
   toyList: Toy[];
   updateToyListEvent: Event;
+  updateChosenToysEvent: Event;
   filteredToyList: Toy[];
   filters: FilterBlock[];
   currentFilters: Array<EnumValuesFilter | BoolValuesFilter | RangeFilter>
   currentSortOrder: sortOrder;
-  chosenToysList: Toy[];
+  chosenToysList: string[];
+  searchValue: string;
   constructor(data: Toy[]) {
     const builder = new FilterBlockBuilder;
     this.toyList = data;
@@ -19,8 +21,10 @@ export class Model {
     this.filters = builder.initAllFilters();
     this.currentFilters = [];
     this.updateToyListEvent = new Event();
+    this.updateChosenToysEvent = new Event();
     this.currentSortOrder = sortOrder.NO_ORDER;
     this.chosenToysList=[];
+    this.searchValue = '';
   }
   saveFilters(){
     localStorage.setItem('filterList', JSON.stringify(this.currentFilters))
@@ -52,7 +56,7 @@ export class Model {
     if(localStorage.getItem('chosenList'))
     {
       const list = JSON.parse(localStorage.getItem('chosenList') as string);
-      this.chosenToysList = list as Toy[];
+      this.chosenToysList = list as string[];
     }
     return this.filteredToyList;
   }
@@ -153,9 +157,8 @@ export class Model {
 
   removeFilters(){
     this.currentFilters = [];
-    this.currentSortOrder = sortOrder.NO_ORDER;
     this.saveFilters();
-    this.filteredToyList = this.toyList;
+    this.filteredToyList = sort(this.currentSortOrder, this.toyList);
     this.updateToyListEvent.trigger<Toy[]>(this.filteredToyList);
   }
   
@@ -170,26 +173,53 @@ export class Model {
       default: this.filterByRange(newAppliedFilter.attr, (newAppliedFilter.option as number[]))
     }
 
-    console.log(this.currentFilters);
     this.filteredToyList = sort(this.currentSortOrder, this.filteredToyList);
-    console.log(this.filteredToyList);
-    this.updateToyListEvent.trigger<Toy[]>(this.filteredToyList);
+    if(this.searchValue.length)
+    {
+      this.searchInFilteredList(this.searchValue);
+    }
+    else this.updateToyListEvent.trigger<Toy[]>(this.filteredToyList);
   }
 
   addToChosen<T>(id: T){
     const newId = id as unknown as string;
-      if(this.chosenToysList.find((toy) => toy.num === newId))
-      {
-        const newToy = this.chosenToysList.find((toy) => toy.num == newId)
-        const key = this.chosenToysList.indexOf(newToy as Toy)
-        this.chosenToysList.splice(key, 1);
-      }
-      else 
-      {
-        const newToy = this.toyList.find(toy => toy.num === newId);
-        this.chosenToysList.push(newToy as Toy);
-      }
-    console.log(this.chosenToysList);
+    let newToy: string;
+    if(this.chosenToysList.find((toy) => toy == newId))
+    {
+      newToy = this.chosenToysList.find((toy) => toy == newId) as string;
+      const key = this.chosenToysList.indexOf(newToy)
+      this.chosenToysList.splice(key, 1);
+    }
+    else 
+    {
+      newToy = (this.toyList.find(toy => toy.num == newId) as Toy).num as string;
+      console.log(newToy, 'add')
+      this.chosenToysList.push(newToy);
+    }
+    if(this.chosenToysList.length>20)
+    {
+      this.chosenToysList.pop();
+    }
+    else this.updateChosenToysEvent.trigger(newToy);
+  }
+
+  searchInFilteredList<T>(input: T){
+    this.searchValue = input as unknown as string;
+    if(!this.searchValue.length)
+    {
+      this.updateToyListEvent.trigger<Toy[]>(this.filteredToyList);
+    }
+    else {
+      const exp = new RegExp(`${this.searchValue}`,'i');
+      console.log(this.searchValue, exp);
+      const foundToysList = this.filteredToyList.filter(toy => {
+        console.log(exp.test(toy.name));
+        return exp.test(toy.name);
+      })
+      console.log(foundToysList)
+      this.updateToyListEvent.trigger<Toy[]>(foundToysList);
+    }
+    
   }
   
 }
