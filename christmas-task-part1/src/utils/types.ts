@@ -35,10 +35,9 @@ export const filterTypes = {
 };
 
 export const filterBy = {
-    enumVal: 'enumVal', 
+    enumVal: 'enumVal',
     boolVal: 'boolVal',
-    range: 'range'
-}
+    range: 'range',
+};
 
 export type possibleFilterType = toyColor | toyShape | toySize | boolean | number;
-

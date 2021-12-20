@@ -18,28 +18,32 @@ export class View {
         this.searchView = new SearchView();
         this.toysView.drawPage();
     }
-    drawToys(data: Toy[], filters: FilterBlock[],
+    drawToys(
+        data: Toy[],
+        filters: FilterBlock[],
         currentFilters: Array<EnumValuesFilter | BoolValuesFilter | RangeFilter>,
-        currentSortOrder: sortOrder, chosenList: string[]){
+        currentSortOrder: sortOrder,
+        chosenList: string[]
+    ) {
         this.filtersView.drawFilters(filters, currentFilters);
         this.toysView.drawItems(data, chosenList);
         this.sortView.drawSort();
         this.searchView.initSearchElement();
         this.sortView.updateSortItemState(currentSortOrder);
     }
-    updateItems<T>(data: T, currentFilters: Array<EnumValuesFilter | BoolValuesFilter | RangeFilter>,
-        chosenList: string[]) {
+    updateItems<T>(
+        data: T,
+        currentFilters: Array<EnumValuesFilter | BoolValuesFilter | RangeFilter>,
+        chosenList: string[]
+    ) {
         this.toysView.drawItems((data as unknown) as Toy[], chosenList);
         this.filtersView.updateFilterItemState(currentFilters);
     }
-    updateChosenItemsView<T>(item?: T, list?: string[]){
-        const chosen = item as unknown as string;
-        if(chosen)
-        {
-            this.toysView.updateChosenItem(document.getElementById(chosen) as HTMLElement)
+    updateChosenItemsView<T>(item?: T, list?: string[]) {
+        const chosen = (item as unknown) as string;
+        if (chosen) {
+            this.toysView.updateChosenItem(document.getElementById(chosen) as HTMLElement);
             this.toysView.updateCounter((list?.length as number).toString());
-        }
-        else this.toysView.showModal();
+        } else this.toysView.showModal();
     }
-    
 }
