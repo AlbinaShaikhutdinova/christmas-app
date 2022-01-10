@@ -1,0 +1,2 @@
+export const ANIMATION_TIME = 2000;
+export const ANIMATION_UPDATE_TIMEOUT = 10;

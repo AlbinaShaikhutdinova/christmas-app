@@ -2,7 +2,7 @@ import { Toy } from '../model/Toy/Toy';
 import { ToysView } from './ToysView/toysView';
 import { FiltersView } from './ToysView/filtersView';
 import { SortView } from './ToysView/sortView';
-import { sortOrder } from '../utils/types';
+import { SORT_ORDER } from '../utils/types';
 import { SearchView } from './ToysView/searchView';
 import { BoolValuesFilter, EnumValuesFilter, FilterBlock, RangeFilter } from '../model/Toy/filter';
 
@@ -22,7 +22,7 @@ export class View {
         data: Toy[],
         filters: FilterBlock[],
         currentFilters: Array<EnumValuesFilter | BoolValuesFilter | RangeFilter>,
-        currentSortOrder: sortOrder,
+        currentSortOrder: SORT_ORDER,
         chosenList: string[]
     ) {
         this.filtersView.drawFilters(filters, currentFilters);

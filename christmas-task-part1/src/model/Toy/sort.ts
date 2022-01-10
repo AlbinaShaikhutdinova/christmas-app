@@ -1,57 +1,58 @@
-import { sortOrder } from '../../utils/types';
+import { SORT_ORDER } from '../../utils/types';
 import { Toy } from './Toy';
-export function sort(type: sortOrder, list: Toy[]): Toy[] {
-    let sortedList: Toy[] = list;
+
+export function sort(type: SORT_ORDER, list: Toy[]): Toy[] {
     switch (+type) {
         case 0:
-            sortedList = sortByAlphabet(list);
-            break;
+            return sortByAlphabet(list);
         case 1:
-            sortedList = reverseAlphabetSort(list);
-            break;
+            return reverseAlphabetSort(list);
         case 2:
-            sortedList = sortByAscention(list);
-            break;
+            return sortByAscention(list);
         case 3:
-            sortedList = sortByDescention(list);
-            break;
+            return sortByDescention(list);
         default:
-            sortedList = list;
-            break;
+            return list
     }
-    return sortedList;
 }
-
 function sortByAlphabet(list: Toy[]): Toy[] {
-    list.sort(dynamicSortStrings('name'));
-    return list;
+    return list.sort(dynamicSortStrings('name'));
 }
 function reverseAlphabetSort(list: Toy[]): Toy[] {
     const sortedList = sortByAlphabet(list);
-    sortedList.reverse();
-    return sortedList;
+    return sortedList.reverse();
 }
 function sortByAscention(list: Toy[]): Toy[] {
-    list.sort(dynamicSortNumbers('year'));
-    return list;
+    return list.sort(dynamicSortNumbers('year'));
 }
 function sortByDescention(list: Toy[]): Toy[] {
     const sortedList = sortByAscention(list);
-    sortedList.reverse();
-    return sortedList;
+    return sortedList.reverse();
 }
 function dynamicSortStrings(property: keyof Toy) {
-    const sortOrder = 1;
+    const orderOfSort = 1;
     return function (a: Toy, b: Toy) {
-        const result = a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
-        return result * sortOrder;
+        let result = 0;
+        if (a[property] < b[property]) {
+            result = -1
+        }
+        else if (a[property] > b[property]) {
+            result = 1
+        }
+        return result * orderOfSort;
     };
 }
 
 function dynamicSortNumbers(property: keyof Toy) {
-    const sortOrder = 1;
+    const orderOfSort = 1;
     return function (a: Toy, b: Toy) {
-        const result = +a[property] < +b[property] ? -1 : +a[property] > +b[property] ? 1 : 0;
-        return result * sortOrder;
+        let result = 0;
+        if (+a[property] < +b[property]) {
+            result = -1
+        }
+        else if (+a[property] > +b[property]) {
+            result = 1
+        }
+        return result * orderOfSort;
     };
 }

@@ -1,6 +1,6 @@
 import Event from '../../controller/Events';
-import { filterBy } from '../../utils/types';
-import { FilterBlock, EnumValuesFilter, BoolValuesFilter, RangeFilter } from '../../model/Toy/filter';
+import { FILTER_BY } from '../../utils/types';
+import { FilterBlock, EnumValuesFilter, BoolValuesFilter, RangeFilter, IfilterType } from '../../model/Toy/filter';
 import { createSlider } from '../../utils/slider';
 import { TargetElement } from 'nouislider';
 
@@ -18,6 +18,8 @@ const CLASSES = {
     INPUT_MIN: 'input-min-value',
     INPUT_MAX: 'input-max-value',
     ACTIVE_ITEM: 'active-item',
+    REMOVE_SETTINGS: 'remove-settings',
+    REMOVE_FILTER: 'remove-filter',
 };
 
 export class FiltersView {
@@ -47,62 +49,70 @@ export class FiltersView {
             typeName.textContent = `${type.name}:`;
             const typeAttribute = document.createElement('div');
             typeAttribute.className = `${CLASSES.FILTER_TYPE_ATTRIBUTE} ${type.attribute}`;
-            const attr = type.attribute;
-            const ft = type.filterType;
-            if (type.filterType === filterBy.enumVal && type.options) {
-                typeAttribute.classList.add(CLASSES.OPTIONS);
-                type.options.forEach((option) => {
-                    const item = document.createElement('div');
-                    item.className = CLASSES.OPTIONS_ITEM;
-                    item.setAttribute(`data-${type.attribute}`, option);
-                    item.addEventListener('click', () => this.filterEvent.trigger({ ft, attr, option }));
-                    typeAttribute.append(item);
-                });
-            } else if (type.filterType === filterBy.boolVal) {
-                typeAttribute.classList.add(CLASSES.TOGGLE_ITEM);
-                const input = document.createElement('input');
-                input.type = 'checkbox';
-
-                typeAttribute.append(input);
-                const option = input;
-                input.addEventListener('click', () => this.filterEvent.trigger({ ft, attr, option }));
-            } else if (type.filterType === filterBy.range) {
-                typeAttribute.classList.add(CLASSES.SLIDER);
-                const minValContainer = document.createElement('input');
-                minValContainer.className = `${CLASSES.INPUT_MIN}`;
-                minValContainer.type = 'text';
-                minValContainer.readOnly = true;
-                const maxValContainer = document.createElement('input');
-                maxValContainer.className = `${CLASSES.INPUT_MAX}`;
-                maxValContainer.type = 'text';
-                maxValContainer.readOnly = true;
-                const range = document.createElement('div');
-                range.className = `range-${type.attribute} slider-styled`;
-                const slider = createSlider(range, type.minValue as number, type.maxValue as number);
-                this.sliders.push(range);
-                range.style.width = '200px';
-                slider.on('update', (values, handle) => {
-                    const value = values[handle];
-                    if (handle === 0) {
-                        minValContainer.value = value as string;
-                    } else if (handle === 1) {
-                        maxValContainer.value = value as string;
-                    }
-                });
-                slider.on('set', (values) => {
-                    console.log(values);
-                    const option = values;
-                    this.filterEvent.trigger({ ft, attr, option });
-                });
-                typeAttribute.append(minValContainer);
-                typeAttribute.append(range);
-                typeAttribute.append(maxValContainer);
+            if (type.filterType === FILTER_BY.ENUM_VAL && type.options) {
+                this.createEnumFilter(typeAttribute, type);
+            } else if (type.filterType === FILTER_BY.BOOL_VAL) {
+                this.createBoolFilter(typeAttribute, type);
+            } else if (type.filterType === FILTER_BY.RANGE) {
+                this.createRangeFilter(typeAttribute, type);
             }
-            filterItemAttributes.append(typeName);
-            filterItemAttributes.append(typeAttribute);
+            filterItemAttributes.append(typeName, typeAttribute);
             filterItem.append(filterItemAttributes);
         });
         return filterItem;
+    }
+    createEnumFilter(typeAttribute: HTMLDivElement, type: IfilterType) {
+        typeAttribute.classList.add(CLASSES.OPTIONS);
+        const attr = type.attribute;
+        const ft = type.filterType;
+        type.options!.forEach((option) => {
+            const item = document.createElement('div');
+            item.className = CLASSES.OPTIONS_ITEM;
+            item.setAttribute(`data-${type.attribute}`, option);
+            item.addEventListener('click', () => this.filterEvent.trigger({ ft, attr, option }));
+            typeAttribute.append(item);
+        });
+    }
+    createBoolFilter(typeAttribute: HTMLDivElement, type: IfilterType) {
+        const attr = type.attribute;
+        const ft = type.filterType;
+        typeAttribute.classList.add(CLASSES.TOGGLE_ITEM);
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        typeAttribute.append(input);
+        const option = input;
+        input.addEventListener('click', () => this.filterEvent.trigger({ ft, attr, option }));
+    }
+    createRangeFilter(typeAttribute: HTMLDivElement, type: IfilterType) {
+        const attr = type.attribute;
+        const ft = type.filterType;
+        typeAttribute.classList.add(CLASSES.SLIDER);
+        const minValContainer = document.createElement('input');
+        minValContainer.className = `${CLASSES.INPUT_MIN}`;
+        minValContainer.type = 'text';
+        minValContainer.readOnly = true;
+        const maxValContainer = document.createElement('input');
+        maxValContainer.className = `${CLASSES.INPUT_MAX}`;
+        maxValContainer.type = 'text';
+        maxValContainer.readOnly = true;
+        const range = document.createElement('div');
+        range.className = `range-${type.attribute} slider-styled`;
+        const slider = createSlider(range, type.minValue as number, type.maxValue as number);
+        this.sliders.push(range);
+        range.style.width = '200px';
+        slider.on('update', (values, handle) => {
+            const value = values[handle];
+            if (handle === 0) {
+                minValContainer.value = value as string;
+            } else if (handle === 1) {
+                maxValContainer.value = value as string;
+            }
+        });
+        slider.on('set', (values) => {
+            const option = values;
+            this.filterEvent.trigger({ ft, attr, option });
+        });
+        typeAttribute.append(minValContainer, range, maxValContainer);
     }
     updateFilterItemState(currentFilters: Array<EnumValuesFilter | BoolValuesFilter | RangeFilter>) {
         for (const el of document.querySelectorAll(`.${CLASSES.OPTIONS_ITEM}`)) {
@@ -118,20 +128,23 @@ export class FiltersView {
             const element = document.querySelector(`.${CLASSES.FILTER_TYPE_ATTRIBUTE}.${filter.name}`);
             if (element?.classList.contains(CLASSES.OPTIONS)) {
                 for (const item of element.children) {
-                    if (item.getAttribute(`data-${filter.name}`) === (filter as EnumValuesFilter).option)
+                    if (item.getAttribute(`data-${filter.name}`) === (filter as EnumValuesFilter).option) {
                         item.classList.add(CLASSES.ACTIVE_ITEM);
+                    }
                 }
             } else if (element?.classList.contains(CLASSES.SLIDER)) {
-                if (element?.classList.contains('count'))
+                if (element?.classList.contains('count')) {
                     this.sliders[0].noUiSlider?.set(
                         [(filter as RangeFilter).minValue, (filter as RangeFilter).maxValue],
                         false
                     );
-                else
+                }
+                else {
                     this.sliders[1].noUiSlider?.set(
                         [(filter as RangeFilter).minValue, (filter as RangeFilter).maxValue],
                         false
                     );
+                }
             } else if (element?.classList.contains(CLASSES.TOGGLE_ITEM)) {
                 const input = element!.querySelector('input');
                 input!.checked = (filter as BoolValuesFilter).value;
@@ -139,18 +152,18 @@ export class FiltersView {
         });
     }
     drawFilters(filters: FilterBlock[], currentFilters: Array<EnumValuesFilter | BoolValuesFilter | RangeFilter>) {
-        const containerF = document.querySelector(`.${CLASSES.FILTERS}`);
+        const filterElementsContainer = document.querySelector(`.${CLASSES.FILTERS}`);
         filters.forEach((filter) => {
             const item = this.drawFilterItem(filter);
-            containerF?.append(item);
+            filterElementsContainer?.append(item);
         });
         this.initRemoveButton();
         this.updateFilterItemState(currentFilters);
     }
     initRemoveButton() {
-        const removeBtn = document.querySelector('.remove-filter');
+        const removeBtn = document.querySelector(`.${CLASSES.REMOVE_FILTER}`);
         removeBtn?.addEventListener('click', () => this.removeFiltersEvent.trigger());
-        const removeSettingsBtn = document.querySelector('.remove-settings');
+        const removeSettingsBtn = document.querySelector(`.${CLASSES.REMOVE_SETTINGS}`);
         removeSettingsBtn?.addEventListener('click', () => this.removeSettingsEvent.trigger());
     }
 }

@@ -1,18 +1,21 @@
 import Event from '../../controller/Events';
-import { sortOrder } from '../../utils/types';
+import { SORT_ORDER } from '../../utils/types';
 
+const CLASSES = {
+    SORT_SELECTOR: 'sort__selector',
+}
 export class SortView {
     sortEvent: Event;
     constructor() {
         this.sortEvent = new Event();
     }
 
-    updateSortItemState(order: sortOrder) {
-        const sortSelector = document.querySelector('.sort__selector');
+    updateSortItemState(order: SORT_ORDER) {
+        const sortSelector = document.querySelector(`.${CLASSES.SORT_SELECTOR}`);
         (sortSelector as HTMLSelectElement).value = (order as unknown) as string;
     }
     drawSort() {
-        const sortSelector = document.querySelector('.sort__selector');
+        const sortSelector = document.querySelector(`.${CLASSES.SORT_SELECTOR}`);
         sortSelector?.addEventListener('change', (e) => {
             const target = e?.currentTarget;
             const value = (target as HTMLSelectElement).value;

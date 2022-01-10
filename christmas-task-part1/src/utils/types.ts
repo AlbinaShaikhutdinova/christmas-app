@@ -1,10 +1,10 @@
-export enum toySize {
+export enum TOY_SIZE {
     BIG = 'большой',
     MEDIUM = 'средний',
     SMALL = 'малый',
 }
 
-export enum toyShape {
+export enum TOY_SHAPE {
     BALL = 'шар',
     FIGURE = 'фигурка',
     BELL = 'колокольчик',
@@ -12,7 +12,7 @@ export enum toyShape {
     PINECONE = 'шишка',
 }
 
-export enum toyColor {
+export enum TOY_COLOR {
     RED = 'красный',
     BLUE = 'синий',
     GREEN = 'зелёный',
@@ -20,7 +20,7 @@ export enum toyColor {
     WHITE = 'белый',
 }
 
-export enum sortOrder {
+export enum SORT_ORDER {
     ALPHABET,
     REVERSE_ALPHABET,
     ASCENDING,
@@ -29,15 +29,15 @@ export enum sortOrder {
 }
 
 export const filterTypes = {
-    shape: toyShape,
-    size: toySize,
-    color: toyColor,
+    shape: TOY_SHAPE,
+    size: TOY_SIZE,
+    color: TOY_COLOR,
 };
 
-export const filterBy = {
-    enumVal: 'enumVal',
-    boolVal: 'boolVal',
-    range: 'range',
+export enum FILTER_BY {
+    ENUM_VAL = 'enumVal',
+    BOOL_VAL = 'boolVal',
+    RANGE = 'range',
 };
 
-export type possibleFilterType = toyColor | toyShape | toySize | boolean | number;
+export type possibleFilterType = TOY_COLOR | TOY_SHAPE | TOY_SIZE | boolean | number;
